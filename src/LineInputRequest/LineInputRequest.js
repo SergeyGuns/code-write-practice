@@ -6,12 +6,9 @@ import {
   useGlobalKeyDown,
 } from "./LineInputRequestHandlers";
 
-export function Letter({ letter, isTyped, isMissLetter, isSpace, key }) {
+export function Letter({ letter, isTyped, isMissLetter, isSpace, id }) {
   return (
-    <span
-      key={key}
-      className={cx("Letter", { isMissLetter, isTyped, isSpace })}
-    >
+    <span key={id} className={cx("Letter", { isMissLetter, isTyped, isSpace })}>
       {isSpace ? "•" : letter}
     </span>
   );
