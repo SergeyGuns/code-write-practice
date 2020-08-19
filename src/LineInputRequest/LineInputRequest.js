@@ -1,10 +1,7 @@
 import React from "react";
 import "./LineInputRequest.scss";
 import cx from "classnames";
-import {
-  useGlobalKeyPress,
-  useGlobalKeyDown,
-} from "./LineInputRequestHandlers";
+import { useGlobalKeyPress, useGlobalKeyDown } from "../globalHandlers";
 
 export function Letter({ letter, isTyped, isMissLetter, isSpace, id }) {
   return (
@@ -52,12 +49,20 @@ export function Line({ requireLine, typedLine }) {
   );
 }
 
-function LineInputRequest(props) {
-  const [requireLine, setRequireLine] = React.useState("abc dfe");
+function LineInputRequest({ requireLine }) {
   const [typedLine, setTypedLine] = React.useState("");
 
-  const handleInputAddLetter = ({ key }) => {
-    setTypedLine(typedLine + key);
+  const handleInputAddLetter = (ev) => {
+    const SPACE_KEY_CODE = 32;
+    const ENTER_KEY_CODE = 13;
+    if (ev.keyCode === SPACE_KEY_CODE) {
+      ev.preventDefault();
+    }
+    if (ev.keyCode === ENTER_KEY_CODE) {
+      return setTypedLine(typedLine + "\n");
+    }
+
+    setTypedLine(typedLine + ev.key);
   };
   const popLine = (line) =>
     line.length ? line.substr(0, line.length - 1) : "";
@@ -70,6 +75,7 @@ function LineInputRequest(props) {
     const ENTER_KEY_CODE = 13;
     if (keyCode === ENTER_KEY_CODE) callback();
   };
+
   useGlobalKeyPress(handleInputAddLetter);
   useGlobalKeyDown(
     handleBackspacePress(() => setTypedLine(popLine(typedLine)))

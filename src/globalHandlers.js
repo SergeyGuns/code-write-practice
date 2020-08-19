@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 export const useWindowEvent = (event, callback) => {
   useEffect(() => {
-    window.addEventListener(event, callback);
+    window.addEventListener(event, callback, false);
     return () => window.removeEventListener(event, callback);
   }, [event, callback]);
 };
