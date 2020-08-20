@@ -22,7 +22,6 @@ export function isEqualLine(a, b) {
 }
 
 export function Line({ requireLine, typedLine }) {
-  console.log({ requireLine, typedLine });
   const line = requireLine.split("").map((letter, i) => ({
     letter,
     isSpace: letter === " ",
@@ -51,29 +50,27 @@ export function Line({ requireLine, typedLine }) {
 
 function LineInputRequest({ requireLine }) {
   const [typedLine, setTypedLine] = React.useState("");
-
   const handleInputAddLetter = (ev) => {
     const SPACE_KEY_CODE = 32;
     const ENTER_KEY_CODE = 13;
+
     if (ev.keyCode === SPACE_KEY_CODE) {
       ev.preventDefault();
     }
+
     if (ev.keyCode === ENTER_KEY_CODE) {
       return setTypedLine(typedLine + "\n");
     }
 
     setTypedLine(typedLine + ev.key);
   };
+
   const popLine = (line) =>
     line.length ? line.substr(0, line.length - 1) : "";
 
   const handleBackspacePress = (callback) => ({ keyCode }) => {
     const BACKSPACE_KEY_CODE = 8;
     if (keyCode === BACKSPACE_KEY_CODE) callback();
-  };
-  const handleEnterPress = (callback) => ({ keyCode }) => {
-    const ENTER_KEY_CODE = 13;
-    if (keyCode === ENTER_KEY_CODE) callback();
   };
 
   useGlobalKeyPress(handleInputAddLetter);

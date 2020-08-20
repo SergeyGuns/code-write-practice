@@ -3,7 +3,6 @@ import actions from "./globalActions";
 
 function setState(newState) {
   this.state = { ...this.state, ...newState };
-  console.log({ newState });
   this.listeners.forEach((listener) => {
     listener(this.state);
   });

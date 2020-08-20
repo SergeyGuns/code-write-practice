@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import LineInputRequest from "./LineInputRequest";
 import ChoseLesson from "./ChoseLesson";
 import lessons from "./lessons";
@@ -20,35 +21,18 @@ function App() {
   }, [setAppInitState]);
 
   return (
-    <div>
-      {globalState.app ? (
-        <div className="App">
-          <button
-            disabled={globalState.app.mode === APP_STATE.MODE.CHOSE_LESSON}
-            onClick={() =>
-              globalActions.setAppMode(APP_STATE.MODE.CHOSE_LESSON)
-            }
-          >
-            CHOSE_LESSON
-          </button>
-          <button
-            disabled={globalState.app.mode === APP_STATE.MODE.WRITE_LESSON}
-            onClick={() =>
-              globalActions.setAppMode(APP_STATE.MODE.WRITE_LESSON)
-            }
-          >
-            WRITE_LESSON
-          </button>
-          {globalState.app.currentLesson === null ? (
-            <ChoseLesson lessons={lessons} />
-          ) : (
-            <LineInputRequest
-              requireLine={globalState.app.currentLesson.value}
-            />
-          )}
-        </div>
-      ) : null}
-    </div>
+    <Router>
+      <div className="App">
+        {lessons.map((lesson, index) => (
+          <Link to={`/${index}`}>{lesson.name}</Link>
+        ))}
+        {lessons.map((lesson, index) => (
+          <Route path={`/${index}`}>
+            <LineInputRequest requireLine={lesson.value} />)
+          </Route>
+        ))}
+      </div>
+    </Router>
   );
 }
 
