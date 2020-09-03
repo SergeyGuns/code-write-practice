@@ -6,6 +6,7 @@ import lessons from "./lessons";
 import "./App.css";
 import useGlobal from "./globalHook.js";
 import { APP_STATE } from "./constants";
+import Menu from "./Menu";
 
 const setAppInitState = (setter) =>
   setter({
@@ -24,13 +25,11 @@ function App() {
     <Router>
       <div className="App">
         {lessons.map((lesson, index) => (
-          <Link to={`/${index}`}>{lesson.name}</Link>
-        ))}
-        {lessons.map((lesson, index) => (
           <Route path={`/${index}`}>
             <LineInputRequest requireLine={lesson.value} />)
           </Route>
         ))}
+        <Menu lessons={lessons} />
       </div>
     </Router>
   );

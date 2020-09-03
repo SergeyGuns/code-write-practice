@@ -1,6 +1,13 @@
 import React from "react";
 import useGlobal from "../globalHook";
 import { APP_STATE } from "../constants";
+
+const Lesson = ({ handleChoseLesson, index, name }) => (
+  <div onClick={() => handleChoseLesson(index)} key={index}>
+    {name}
+  </div>
+);
+
 const ChoseLesson = ({ lessons }) => {
   const [, globalActions] = useGlobal();
 
@@ -10,9 +17,8 @@ const ChoseLesson = ({ lessons }) => {
   };
 
   return lessons.map(({ name }, index) => (
-    <div onClick={() => handleChoseLesson(index)} key={index}>
-      {name}
-    </div>
+    <Lesson key={index} {...{ name, index, handleChoseLesson }} />
   ));
 };
+
 export default ChoseLesson;
