@@ -1,7 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./LineInputRequest.scss";
 import cx from "classnames";
 import { useGlobalKeyPress, useGlobalKeyDown } from "../globalHandlers";
+
+const ADD_LETTER = "ADD_LETTER";
+const ADD_NEW_LINE = "ADD_NEW_LINE";
+const REMOVE_LAST_LETTER = "REMOVE_LAST_LETTER";
+
+const popLine = (line) => (line.length ? line.substr(0, line.length - 1) : "");
+
+function reducer(state, action) {
+  console.log({ state, action });
+  const actions = {
+    ADD_LETTER: () => {
+      state.typedLine += action.payload;
+      return { ...state };
+    },
+    ADD_NEW_LINE: () => {
+      state.typedLine += "\n";
+      return { ...state };
+    },
+    REMOVE_LAST_LETTER: () => {
+      state.typedLine = popLine(state.typedLine);
+      return { ...state };
+    },
+  };
+
+  if (actions[action.type]) {
+    return actions[action.type]();
+  }
+
+  throw new Error();
+}
 
 export function Letter({ letter, isTyped, isMissLetter, isSpace, id }) {
   return (
@@ -50,7 +80,9 @@ export function Line({ requireLine, typedLine }) {
 
 function LineInputRequest({ requireLine }) {
   const [typedLine, setTypedLine] = React.useState("");
+  const [state, dispatch] = React.useReducer(reducer, { typedLine: "" });
   const handleInputAddLetter = (ev) => {
+    console.log(ev);
     const SPACE_KEY_CODE = 32;
     const ENTER_KEY_CODE = 13;
 
@@ -59,14 +91,15 @@ function LineInputRequest({ requireLine }) {
     }
 
     if (ev.keyCode === ENTER_KEY_CODE) {
-      return setTypedLine(typedLine + "\n");
+      // return setTypedLine(typedLine + "\n");
+      return dispatch({ type: ADD_NEW_LINE });
     }
 
-    setTypedLine(typedLine + ev.key);
+    return dispatch({ type: ADD_LETTER, payload: ev.key });
   };
-
-  const popLine = (line) =>
-    line.length ? line.substr(0, line.length - 1) : "";
+  useEffect(() => {
+    console.log({ typedLine });
+  }, [typedLine]);
 
   const handleBackspacePress = (callback) => ({ keyCode }) => {
     const BACKSPACE_KEY_CODE = 8;
@@ -75,11 +108,11 @@ function LineInputRequest({ requireLine }) {
 
   useGlobalKeyPress(handleInputAddLetter);
   useGlobalKeyDown(
-    handleBackspacePress(() => setTypedLine(popLine(typedLine)))
+    handleBackspacePress(() => dispatch({ type: REMOVE_LAST_LETTER }))
   );
   return (
     <div>
-      <Line requireLine={requireLine} typedLine={typedLine} />
+      <Line requireLine={requireLine} typedLine={state.typedLine} />
     </div>
   );
 }
