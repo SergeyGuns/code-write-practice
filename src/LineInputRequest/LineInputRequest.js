@@ -1,6 +1,6 @@
-import React from "react";
-import "./LineInputRequest.scss";
 import cx from "classnames";
+import React, { useEffect, useRef } from "react";
+import "./LineInputRequest.scss";
 
 export function Letter({ letter, isTyped, isMissLetter, isSpace, id }) {
   return (
@@ -49,40 +49,65 @@ export function Line({ requireLine, typedLine }) {
 
 function LineInputRequest({ requireLine }) {
   const [typedLine, setTypedLine] = React.useState("");
-  const handleInputAddLetter = (setter) => (ev) => {
+
+  function handleInputAddLetter(ev) {
     console.log(ev);
+    console.log({ typedLine, setTypedLine });
     const SPACE_KEY_CODE = 32;
     const ENTER_KEY_CODE = 13;
     let newLine = typedLine;
     if (ev.keyCode === SPACE_KEY_CODE) {
       ev.preventDefault();
     }
-
     if (ev.keyCode === ENTER_KEY_CODE) {
       newLine = typedLine + "\n";
-      return setter(newLine);
+      return setTypedLine(newLine);
     }
     newLine = typedLine + ev.key;
-    return setter(newLine);
-  };
-  React.useEffect(() => {
-    const listener = handleInputAddLetter(setTypedLine);
-    console.log("listener added");
-    const addListeners = () => {
-      window.addEventListener("keypress", listener);
-    };
-    const removeListeners = () => {
-      console.log("listener removed");
-      window.removeEventListener("keypress", listener);
-    };
-    addListeners();
-    return removeListeners;
-  }, []);
+    return setTypedLine(newLine);
+  }
+
+  useEventListener("keypress", handleInputAddLetter);
 
   return (
     <div>
       <Line requireLine={requireLine} typedLine={setTypedLine} />
     </div>
+  );
+}
+
+// Hook
+function useEventListener(eventName, handler, element = window) {
+  // Create a ref that stores handler
+  const savedHandler = useRef();
+
+  // Update ref.current value if handler changes.
+  // This allows our effect below to always get latest handler ...
+  // ... without us needing to pass it in effect deps array ...
+  // ... and potentially cause effect to re-run every render.
+  useEffect(() => {
+    savedHandler.current = handler;
+  }, [handler]);
+
+  useEffect(
+    () => {
+      // Make sure element supports addEventListener
+      // On
+      const isSupported = element && element.addEventListener;
+      if (!isSupported) return;
+
+      // Create event listener that calls handler function stored in ref
+      const eventListener = (event) => savedHandler.current(event);
+
+      // Add event listener
+      element.addEventListener(eventName, eventListener);
+
+      // Remove event listener on cleanup
+      return () => {
+        element.removeEventListener(eventName, eventListener);
+      };
+    },
+    [eventName, element] // Re-run if eventName or element changes
   );
 }
 

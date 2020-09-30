@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import LineInputRequest from "./LineInputRequest";
-import ChoseLesson from "./ChoseLesson";
-import lessons from "./lessons";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import "./App.css";
-import useGlobal from "./globalHook.js";
 import { APP_STATE } from "./constants";
+import useGlobal from "./globalHook.js";
+import lessons from "./lessons";
+import LineInputRequest from "./LineInputRequest";
 import Menu from "./Menu";
 
 const setAppInitState = (setter) =>
@@ -25,7 +24,7 @@ function App() {
     <Router>
       <div className="App">
         {lessons.map((lesson, index) => (
-          <Route path={`/${index}`}>
+          <Route key={index} path={`/${index}`}>
             <LineInputRequest requireLine={lesson.value} />)
           </Route>
         ))}

@@ -15,7 +15,7 @@ const Menu = ({ lessons }) => {
         <div className="Menu__list-wrapper">
           <div onClick={(e) => e.stopPropagation()} className="Menu__list">
             {lessons.map((lesson, index) => (
-              <div className="Menu__item">
+              <div key={index} className="Menu__item">
                 <Link to={`/${index}`}>{lesson.name}</Link>
               </div>
             ))}
