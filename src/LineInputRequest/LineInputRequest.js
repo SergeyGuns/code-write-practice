@@ -1,5 +1,5 @@
 import cx from "classnames";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import "./LineInputRequest.scss";
 
 export function Letter({ letter, isTyped, isMissLetter, isSpace, id }) {
