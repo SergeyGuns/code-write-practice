@@ -59,6 +59,18 @@ function LineInputRequest(props) {
   const [requireLine, setRequireLine] = React.useState("abc dfe");
   const [typedLine, setTypedLine] = React.useState("");
 
+  React.useEffect(() => {
+    const listener = (e) => console.log({ e });
+    const addListeners = () => {
+      window.addEventListener("keypress", listener);
+    };
+    const removeListeners = () => {
+      window.removeEventListener(listener);
+    };
+    addListeners();
+    return removeListeners;
+  }, []);
+
   const handleInputAddLetter = ({ key }) => {
     setTypedLine(typedLine + key);
   };
