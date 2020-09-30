@@ -1,17 +1,10 @@
 import React from "react";
 import "./LineInputRequest.scss";
 import cx from "classnames";
-import {
-  useGlobalKeyPress,
-  useGlobalKeyDown,
-} from "./LineInputRequestHandlers";
 
-export function Letter({ letter, isTyped, isMissLetter, isSpace, key }) {
+export function Letter({ letter, isTyped, isMissLetter, isSpace, id }) {
   return (
-    <span
-      key={key}
-      className={cx("Letter", { isMissLetter, isTyped, isSpace })}
-    >
+    <span key={id} className={cx("Letter", { isMissLetter, isTyped, isSpace })}>
       {isSpace ? "•" : letter}
     </span>
   );
@@ -28,7 +21,6 @@ export function isEqualLine(a, b) {
 }
 
 export function Line({ requireLine, typedLine }) {
-  console.log({ requireLine, typedLine });
   const line = requireLine.split("").map((letter, i) => ({
     letter,
     isSpace: letter === " ",
@@ -55,43 +47,41 @@ export function Line({ requireLine, typedLine }) {
   );
 }
 
-function LineInputRequest(props) {
-  const [requireLine, setRequireLine] = React.useState("abc dfe");
+function LineInputRequest({ requireLine }) {
   const [typedLine, setTypedLine] = React.useState("");
+  const handleInputAddLetter = (setter) => (ev) => {
+    console.log(ev);
+    const SPACE_KEY_CODE = 32;
+    const ENTER_KEY_CODE = 13;
+    let newLine = typedLine;
+    if (ev.keyCode === SPACE_KEY_CODE) {
+      ev.preventDefault();
+    }
 
+    if (ev.keyCode === ENTER_KEY_CODE) {
+      newLine = typedLine + "\n";
+      return setter(newLine);
+    }
+    newLine = typedLine + ev.key;
+    return setter(newLine);
+  };
   React.useEffect(() => {
-    const listener = (e) => console.log({ e });
+    const listener = handleInputAddLetter(setTypedLine);
+    console.log("listener added");
     const addListeners = () => {
       window.addEventListener("keypress", listener);
     };
     const removeListeners = () => {
-      window.removeEventListener(listener);
+      console.log("listener removed");
+      window.removeEventListener("keypress", listener);
     };
     addListeners();
     return removeListeners;
   }, []);
 
-  const handleInputAddLetter = ({ key }) => {
-    setTypedLine(typedLine + key);
-  };
-  const popLine = (line) =>
-    line.length ? line.substr(0, line.length - 1) : "";
-
-  const handleBackspacePress = (callback) => ({ keyCode }) => {
-    const BACKSPACE_KEY_CODE = 8;
-    if (keyCode === BACKSPACE_KEY_CODE) callback();
-  };
-  const handleEnterPress = (callback) => ({ keyCode }) => {
-    const ENTER_KEY_CODE = 13;
-    if (keyCode === ENTER_KEY_CODE) callback();
-  };
-  useGlobalKeyPress(handleInputAddLetter);
-  useGlobalKeyDown(
-    handleBackspacePress(() => setTypedLine(popLine(typedLine)))
-  );
   return (
     <div>
-      <Line requireLine={requireLine} typedLine={typedLine} />
+      <Line requireLine={requireLine} typedLine={setTypedLine} />
     </div>
   );
 }

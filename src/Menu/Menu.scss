@@ -1,0 +1,82 @@
+.Menu {
+  font-size: 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  .Menu__toggle-btn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3vw;
+    height: 3vw;
+    &-shape {
+      position: absolute;
+      display: inline-block;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 0.5vw;
+      background-color: #000;
+      transition: all .5s;
+    }
+    &-shape_2 {
+      top: 1vw;
+    }
+    &-shape_3 {
+      top: 2vw;
+    }
+    &.Menu__toggle-btn_close {
+      .Menu__toggle-btn-shape_1 {
+        transform: rotate(45deg);
+        top: 1vw;
+      }
+      .Menu__toggle-btn-shape_2 {
+        opacity: 0;
+      }
+      .Menu__toggle-btn-shape_3 {
+        transform: rotate(-45deg);
+        top: 1vw;
+      }
+    }
+  }
+  &__wrapper {
+    animation: fadeIn 0.5s both;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  &__list-wrapper {
+    height: 100%;
+    width: 30vw;
+    animation: fadeInRigth 0.5s both;
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 1rem;
+    padding-top: 5vw;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  &__item {
+    border: solid 1px;
+    border-bottom: transparent;
+    padding: 0.5rem;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInRigth {
+  from {
+    transform: translate(-100px, 0);
+  }
+}
