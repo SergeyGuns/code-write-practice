@@ -1,5 +1,5 @@
 import cx from "classnames";
-import React from "react";
+import React, { useEffect } from "react";
 import { useWindowEvent } from "../globalHandlers";
 import useSetStateWithPromise from "../useSetStateWithPromise";
 import keycode from "keycode";
@@ -87,6 +87,9 @@ let newLine = "";
 function LineInputRequest({ requireLine }) {
   const [typedLine, setTypedLine] = useSetStateWithPromise("");
   console.log(typedLine, BACKSPACE_KEY_CODE);
+  useEffect(() => {
+    newLine = "";
+  }, []);
   async function handleInputAddLetter(ev) {
     let currLine = newLine !== typedLine ? newLine : typedLine;
     if (ev.keyCode === SPACE_KEY_CODE) {
